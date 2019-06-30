@@ -3,21 +3,17 @@ package com.example.estudiante.app_pingui_g7;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.HeaderViewListAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.Header;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -40,32 +36,39 @@ public class Temperatura extends AppCompatActivity {
     private void consultarTemperatura(){
 
 
-        final TextView tem1 = (TextView) findViewById(R.id.tem_1);
-        final TextView tem2 = (TextView) findViewById(R.id.tem_2);
-        final TextView tem3 = (TextView) findViewById(R.id.tem_3);
+        final TextView tem1 = (TextView) findViewById(R.id.txt_view_temperatura);
 
 
 
 
-            String url1 = " https://amstdb.herokuapp.com/db/registroDeFrios/1";
+
+            String url1 = " https://amstdb.herokuapp.com/db/registroDeFrios";
         String url2 = " https://amstdb.herokuapp.com/db/registroDeFrios/2";
         String url3 = " https://amstdb.herokuapp.com/db/registroDeFrios/3";
 
 
-            JsonObjectRequest request = new JsonObjectRequest(
+            JsonArrayRequest request = new JsonArrayRequest(
 
                     Request.Method.GET, url1, null,
 
-                    new Response.Listener<JSONObject>() {
+                    new Response.Listener<JSONArray>() {
 
                         @Override
-                        public void onResponse(JSONObject response) {
+                        public void onResponse(JSONArray response) {
                             System.out.println(response);
                             try {
 
-                                    tem1.setText(response.getString("temperatura"));
+                                int len = response.length();
+                                for (int i = 0 ; i<len; i++){
+                                    JSONObject x1 = (JSONObject) response.get(i);
+                                    //System.out.println(x1.toString());
+                                   // (x1.getString("temperatura\n"));
+                                    tem1.append("Id: "+x1.getString("id")+
+                                            "\t\t\t\tFecha: "+ x1.getString("fecha_registro")
+                                            +"\t\t\t\tTemperatura: "+ x1.getString("temperatura")
+                                            +"\t\t\t\tRecorrido: "+ x1.getString("recorrido") +"\n\n");
 
-
+                                }
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -81,86 +84,11 @@ public class Temperatura extends AppCompatActivity {
                 {
                     Map<String, String> params = new HashMap<String, String>();
                     params.put("Authorization", "JWT " + token);
-                    System.out.println(token);
+                    //System.out.println(token);
                     return params;
                 }
             };;
             mQueue.add(request);
-        JsonObjectRequest request2 = new JsonObjectRequest(
 
-                Request.Method.GET, url2, null,
-
-                new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        System.out.println(response);
-                        try {
-
-                            tem2.setText(response.getString("temperatura"));
-
-
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-            }
-        }){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError
-            {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("Authorization", "JWT " + token);
-                System.out.println(token);
-                return params;
-            }
-        };;
-        mQueue.add(request2);
-        JsonObjectRequest request3 = new JsonObjectRequest(
-
-                Request.Method.GET, url3, null,
-
-                new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        System.out.println(response);
-                        try {
-
-                            tem3.setText(response.getString("temperatura"));
-
-
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-            }
-        }){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError
-            {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("Authorization", "JWT " + token);
-                System.out.println(token);
-                return params;
-            }
-        };;
-        mQueue.add(request3);
-
-
-
-        }
-
-
-
-
-    }
+    }}
 

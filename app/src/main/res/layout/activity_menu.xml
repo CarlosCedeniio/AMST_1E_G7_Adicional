@@ -12,7 +12,7 @@
         android:id="@+id/MENU"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="MENU XDXD" />
+        android:text="" />
 
     <Button
         android:id="@+id/btn_temperatura"
